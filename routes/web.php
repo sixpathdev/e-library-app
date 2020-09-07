@@ -21,6 +21,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
     $router->get('/forgotpassword-template', 'AuthController@template');
 
+    //Auth related routes
     $router->post('/login', 'AuthController@login');
     $router->post('/register', 'AuthController@register');
     $router->post('/forgotpassword', 'AuthController@forgotpassword');
@@ -31,6 +32,7 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
         //User
         $router->get('/profile', 'UserController@profile');
+        $router->put('/updateprofile', 'UserController@updateprofile');
 
         //Books
         $router->get('/books', 'BookController@allBooks');

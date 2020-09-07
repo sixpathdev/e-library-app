@@ -115,6 +115,7 @@ class AuthController extends Controller
         $userWithCode = User::where('resetcode', $request->input('resetcode'))->where('email', $request->input('email'))->first();
         if ($userWithCode) {
             $userWithCode->password = Hash::make($request->input('password'));
+            $userWithCode->resetcode = null;
             $userWithCode->save();
 
             http_response_code(200);
