@@ -76,15 +76,23 @@ class AuthController extends Controller
         return response()->json(compact('status', 'message', 'data'));
     }
 
+    public function generateresetcode()
+    {
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzAZENDIKIDHYGTGYHJK';
+        $code = substr(str_shuffle($permitted_chars), 0, 8);
+        return $code;
+    }
+
     public function forgotpassword(Request $request)
     {
 
-        $code = $this->generateresetcode();
+        $resetcode = $this->generateresetcode();
         $user = User::where('email', $request->input('email'))->first();
         try {
             if ($user) {
-                $user->resetcode = $code;
-                Mail::to('sixpathdev@gmail.com')->send(new forgotpassword($user->name, $code));
+                $user->resetcode = $resetcode;
+                Mail::to('sixpathdev@gmail.com')->send(new forgotpassword($user->name, $resetcode));
+                $user->save();
 
                 http_response_code(200);
                 $status = http_response_code();
@@ -102,9 +110,9 @@ class AuthController extends Controller
         $this->validate($request, [
             'resetcode' => 'required|max:9',
             'password'    => 'required',
-            'email' => 'required|unique:users|email'
+            'email' => 'required|email'
         ]);
-        $userWithCode = User::where('resetcode', $request->input('resetcode'))->first();
+        $userWithCode = User::where('resetcode', $request->input('resetcode'))->where('email', $request->input('email'))->first();
         if ($userWithCode) {
             $userWithCode->password = Hash::make($request->input('password'));
             $userWithCode->save();
@@ -121,13 +129,6 @@ class AuthController extends Controller
             $success = false;
             return response()->json(compact('status', 'success', 'message'));
         }
-    }
-
-    protected function generateresetcode()
-    {
-        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzAZENDIKIDHYGTGYHJK';
-        $code = substr(str_shuffle($permitted_chars), 0, 8);
-        return $code;
     }
 
     public function template()

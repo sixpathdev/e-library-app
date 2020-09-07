@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Forgot password</title>
 </head>
 
 <body>
@@ -118,9 +118,9 @@
                 requested by you, kindly disregard this email. On the other hand, if this was authorized by you follow
                 the link to change your password.</p>
             <p class="center" style="margin: 20px 0;">Use the code below: <br><br> <span
-                    style="font-weight: bold;">{{$code}}</span></p>
+                    style="font-weight: bold;">{{$resetcode}}</span></p>
             <div class="clicklink">
-                {{-- <p class="center">Or click on this <a href="/resetpassword?code={{$code}}"><b>RESET PASSWORD</b></a> --}}
+                {{-- <p class="center">Or click on this <a href="/resetpassword?code={{$resetcode}}"><b>RESET PASSWORD</b></a> --}}
                 </p>
             </div>
             <p class="center" style="margin-top: 30px"><b>CHEERS!</b></p>

@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->bigInteger('phone');
             $table->string('department');
-            $table->string('resetcode');
+            $table->string('resetcode')->nullable();
             $table->string('institution');
             $table->timestamps();
         });
