@@ -67,6 +67,8 @@ class AuthController extends Controller
         $message = "Registration successful. Proceed to login";
         $data = $user;
 
-        return response()->json(compact('message', 'data'));
+        http_response_code(201);
+        $status = http_response_code();
+        return response()->json(compact('status', 'message', 'data'));
     }
 }

@@ -23,6 +23,17 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     $router->post('/register', 'AuthController@register');
 
 
-    // $router->group(['middleware' => 'auth'], function () use ($router) {
-    // });
+    $router->group(['middleware' => 'auth'], function () use ($router) {
+
+        //User
+        $router->get('/profile', 'UserController@profile');
+
+        //Books
+        $router->get('/books', 'BookController@allBooks');
+        $router->get('/user/{user_id}/books', 'BookController@userBooks');
+        $router->get('/books/{id}', 'BookController@userBooks');
+        $router->get('/book/{id}', 'BookController@showbook');
+        $router->post('/books', 'BookController@uploadbook');
+        $router->delete('/book/{id}', 'BookController@deletebook');
+    });
 });
