@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Mail\forgotpassword;
 use App\User;
+use Error;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Tymon\JWTAuth\JWTAuth;
 
 class AuthController extends Controller
@@ -70,5 +74,64 @@ class AuthController extends Controller
         http_response_code(201);
         $status = http_response_code();
         return response()->json(compact('status', 'message', 'data'));
+    }
+
+    public function forgotpassword(Request $request)
+    {
+
+        $code = $this->generateresetcode();
+        $user = User::where('email', $request->input('email'))->first();
+        try {
+            if ($user) {
+                $user->resetcode = $code;
+                Mail::to('sixpathdev@gmail.com')->send(new forgotpassword($user->name, $code));
+
+                http_response_code(200);
+                $status = http_response_code();
+                $message = "An email containing your reset code has been sent to " . $user->email;
+                $success = true;
+                return response()->json(compact('status', 'success', 'message'));
+            }
+        } catch (Exception $e) {
+            throw new Error($e);
+        }
+    }
+
+    public function resetpassword(Request $request)
+    {
+        $this->validate($request, [
+            'resetcode' => 'required|max:9',
+            'password'    => 'required',
+            'email' => 'required|unique:users|email'
+        ]);
+        $userWithCode = User::where('resetcode', $request->input('resetcode'))->first();
+        if ($userWithCode) {
+            $userWithCode->password = Hash::make($request->input('password'));
+            $userWithCode->save();
+
+            http_response_code(200);
+            $status = http_response_code();
+            $message = "Your password has been changed successfully";
+            $success = true;
+            return response()->json(compact('status', 'success', 'message'));
+        } else {
+            http_response_code(400);
+            $status = http_response_code();
+            $message = "User not found";
+            $success = false;
+            return response()->json(compact('status', 'success', 'message'));
+        }
+    }
+
+    protected function generateresetcode()
+    {
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzAZENDIKIDHYGTGYHJK';
+        $code = substr(str_shuffle($permitted_chars), 0, 8);
+        return $code;
+    }
+
+    public function template()
+    {
+        return view('emails.forgotpassword');
     }
 }

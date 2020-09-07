@@ -19,8 +19,12 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
         return $router->app->version();
     });
 
+    $router->get('/forgotpassword-template', 'AuthController@template');
+
     $router->post('/login', 'AuthController@login');
     $router->post('/register', 'AuthController@register');
+    $router->post('/forgotpassword', 'AuthController@forgotpassword');
+    $router->post('/reset-password', 'AuthController@resetpassword');
 
 
     $router->group(['middleware' => 'auth'], function () use ($router) {
